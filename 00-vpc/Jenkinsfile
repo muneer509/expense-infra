@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+    options {
+        timeouts(time: 10, unit: 'MINUTES')
+        disableConcurrentBuilds()
+
+    }
+    parameters {
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description 'Select Action')
+
+    }
+    stages {
+        stage('init')
+            steps {
+                sh 'cd 00-vpc'
+                withAWS(region: 'us-east-1', credentails: 'aws-creds')
+                sh 'terraform init -reconfigure'
+            }
+        // stage('plan')
+        //     steps {
+
+        //     }
+
+
+    }
+    post {
+        always {
+            deleteDir()
+        }
+    }
+
+}
