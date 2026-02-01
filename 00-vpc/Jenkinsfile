@@ -29,10 +29,10 @@ pipeline {
 
         stage('plan') {
             steps {
-                steps {
+                
                     dir('00-vpc') {
                         withAWS(region: 'us-east-1', credentials: 'aws-credes') {
-                        sh 'terraform plan
+                        sh 'terraform plan'
                     }
                     }
                 }
@@ -45,5 +45,3 @@ pipeline {
             deleteDir()
         }
     }
-
-}
