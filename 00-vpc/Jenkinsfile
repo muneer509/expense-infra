@@ -17,27 +17,18 @@ pipeline {
     }
 
     stages {
-        stage('init') {
+        stage('init and plan')
             steps {
                 dir('00-vpc') {
                     withAWS(region: 'us-east-1', credentials: 'aws-credes') {
                         sh 'terraform init -reconfigure'
+                        sh 'terraform plan'
                     }
                 }
             }
         }
 
-        stage('plan') {
-            steps {
-                
-                    dir('00-vpc') {
-                        withAWS(region: 'us-east-1', credentials: 'aws-credes') {
-                        sh 'terraform plan'
-                    }
-                    }
-                }
-            }
-        }
+        
     }
 
     post {
