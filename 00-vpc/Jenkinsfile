@@ -17,7 +17,7 @@ pipeline {
     }
 
     stages {
-        stage('init and plan')
+        stage('init and plan') {
             steps {
                 dir('00-vpc') {
                     withAWS(region: 'us-east-1', credentials: 'aws-credes') {
@@ -36,3 +36,4 @@ pipeline {
             deleteDir()
         }
     }
+}
