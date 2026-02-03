@@ -1,63 +1,118 @@
 
+// pipeline {
+//     agent any
+
+//     options {
+//         timeout(time: 10, unit: 'MINUTES')   // timeout, not timeouts
+//         disableConcurrentBuilds()
+        
+//     }
+
+//     parameters {
+//         choice(
+//             name: 'ACTION',
+//             choices: ['apply', 'destroy'],
+//             description: 'Select Action'     // add colon
+//         )
+//     }
+
+//     stages {
+//         stage('init and plan') {
+//             steps {
+//                 ansiColor('xterm'){
+//                 dir('00-vpc') {
+//                     withAWS(region: 'us-east-1', credentials: 'aws-credes') {
+//                         sh 'terraform init -reconfigure'
+//                         sh 'terraform plan'
+//                     }
+//                 }
+//                 }
+//             }
+//         }
+    
+//         stage('apply or destroy') {
+//                 steps {
+//                     ansiColor('xterm'){
+//                     dir('00-vpc') {
+//                         withAWS(region: 'us-east-1', credentials: 'aws-credes') {
+//                             sh """
+//                             if [ ${params.ACTION} == 'apply']
+//                             then
+//                                 terraform apply -auto-approve
+//                             elif [ ${params.ACTION} == 'destroy']
+//                             then
+//                                 terraform destroy -auto-approve
+//                             fi
+//                             """
+//                         }
+//                     }
+//                     }
+//                 }
+//             }
+
+        
+    
+
+//         post {
+//             always {
+//                 deleteDir()
+//             }
+//         }
+
+// }
+// }
 pipeline {
     agent any
 
     options {
-        timeout(time: 10, unit: 'MINUTES')   // timeout, not timeouts
+        timeout(time: 10, unit: 'MINUTES')   // correct usage
         disableConcurrentBuilds()
-        
     }
 
     parameters {
         choice(
             name: 'ACTION',
             choices: ['apply', 'destroy'],
-            description: 'Select Action'     // add colon
+            description: 'Select Action:'     // added colon for clarity
         )
     }
 
     stages {
         stage('init and plan') {
             steps {
-                ansiColor('xterm'){
-                dir('00-vpc') {
-                    withAWS(region: 'us-east-1', credentials: 'aws-credes') {
-                        sh 'terraform init -reconfigure'
-                        sh 'terraform plan'
+                ansiColor('xterm') {
+                    dir('00-vpc') {
+                        withAWS(region: 'us-east-1', credentials: 'aws-credes') {
+                            sh 'terraform init -reconfigure'
+                            sh 'terraform plan'
+                        }
                     }
-                }
                 }
             }
         }
-    
+
         stage('apply or destroy') {
-                steps {
-                    ansiColor('xterm'){
+            steps {
+                ansiColor('xterm') {
                     dir('00-vpc') {
                         withAWS(region: 'us-east-1', credentials: 'aws-credes') {
                             sh """
-                            if [ ${params.ACTION} == 'apply']
-                            then
+                            if [ "${params.ACTION}" = "apply" ]; then
                                 terraform apply -auto-approve
-                            elif [ ${params.ACTION} == 'destroy']
-                            then
+                            elif [ "${params.ACTION}" = "destroy" ]; then
                                 terraform destroy -auto-approve
                             fi
                             """
                         }
                     }
-                    }
                 }
             }
-
-        
-    
-
-        post {
-            always {
-                deleteDir()
-            }
         }
+    }
 
-}
+    post {
+        always {
+            deleteDir()
+        }
+    }
 }
