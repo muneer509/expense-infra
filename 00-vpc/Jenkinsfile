@@ -32,8 +32,8 @@ pipeline {
 
         
     }
-    stages {
-        stage('init and plan') {
+    
+     stage('init and plan') {
             steps {
                 ansiColor('xterm'){
                 dir('00-vpc') {
@@ -54,7 +54,7 @@ pipeline {
         }
 
         
-    }
+    
 
     post {
         always {
