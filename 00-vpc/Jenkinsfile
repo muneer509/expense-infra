@@ -29,29 +29,26 @@ pipeline {
                 }
             }
         }
-
-        
-    }
     
-     stage('init and plan') {
-            steps {
-                ansiColor('xterm'){
-                dir('00-vpc') {
-                    withAWS(region: 'us-east-1', credentials: 'aws-credes') {
-                        sh """
-                        if [ ${params.ACTION} == 'apply']
-                        then
-                            terraform apply -auto-approve
-                        elif [ ${params.ACTION} == 'destroy']
-                        then
-                            terraform destroy -auto-approve
-                        fi
-                        """
+        stage('apply or destroy') {
+                steps {
+                    ansiColor('xterm'){
+                    dir('00-vpc') {
+                        withAWS(region: 'us-east-1', credentials: 'aws-credes') {
+                            sh """
+                            if [ ${params.ACTION} == 'apply']
+                            then
+                                terraform apply -auto-approve
+                            elif [ ${params.ACTION} == 'destroy']
+                            then
+                                terraform destroy -auto-approve
+                            fi
+                            """
+                        }
+                    }
                     }
                 }
-                }
             }
-        }
 
         
     
@@ -61,4 +58,5 @@ pipeline {
             deleteDir()
         }
     }
+}
 }
