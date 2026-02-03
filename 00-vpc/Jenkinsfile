@@ -45,6 +45,7 @@ pipeline {
                         elif [ ${params.ACTION} == 'destroy']
                         then
                             terraform destroy -auto-approve
+                        fi
                         """
                     }
                 }
