@@ -92,6 +92,10 @@ pipeline {
         }
 
         stage('apply or destroy') {
+            input {
+                message "Click YES to proceed"
+                ok "Yes, please proceed"
+            }
             steps {
                 ansiColor('xterm') {
                     dir('00-vpc') {
